@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Checker</title>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Check if a Number is on the List</h1>
+        <input type="number" id="numberInput" placeholder="Enter a number">
+        <button onclick="checkNumber()">Check</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const apiKey = 'AIzaSyBS_DE8tHqrvO7fcl0T7rD2Tw6zrguIM24';  // Your actual API key
+        const sheetId = '1XAyPO-idSd8DoAwJ-UCTTFXGQEYbnkNfr2p6zYU9ZSs';  // Your actual Google Sheets ID
+        let numberList = [];
+
+        // Fetch data from Google Sheets
+        function fetchNumbersFromSheet() {
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    numberList = rows.map(row => parseInt(row[0]));  // Assuming numbers are in the first column
+                    console.log('Fetched numbers:', numberList);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call the function to fetch numbers from the sheet
+        fetchNumbersFromSheet();
+
+        // Function to check if the number is in the list
+        function checkNumber() {
+            const inputNumber = parseInt(document.getElementById("numberInput").value);
+            const resultDiv = document.getElementById("result");
+
+            if (numberList.includes(inputNumber)) {
+                resultDiv.textContent = inputNumber + " is on the list!";
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.textContent = inputNumber + " is NOT on the list.";
+                resultDiv.style.color = "red";
+            }
+        }
+    </script>
+
+</body>
+</html>
